@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balanceador de Carteira</title>
+    <script src="fiis.js" defer type="module"></script>
+    <script
+      src="https://kit.fontawesome.com/01e0f31649.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Balanceador de Carteira</h1>
+      <ul>
+        <li><a href="./stocks.html">Ações</a></li>
+        <li><a style="background-color: #ddd; color: #000000">FIIs</a></li>
+      </ul>
+    </nav>
+    <main>
+      <div id="left-panel" class="column">
+        <div class="popup" id="edit-popup">
+          <h3 id="edit-ticker">ABEV3</h3>
+          <label for="edit-quantity">Quantidade:</label><br />
+          <input type="number" id="edit-quantity" /><br />
+          <label for="edit-score">Meta: </label>
+          <p style="display: inline" id="rangeValue1">5</p>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value="5"
+            class="slider"
+            id="edit-score"
+            oninput="rangeValue1.innerText = this.value"
+          />
+          <div id="edit-popup_btns">
+            <button id="popup-btn_save" class="btn">Salvar</button>
+            <button id="popup-btn_cancel" class="btn">Cancelar</button>
+          </div>
+        </div>
+        <div class="popup" id="delete-popup">
+          <h3>
+            Tem certeza que quer excluir o ativo
+            <span id="delete-ticker">ABEV3</span>?
+          </h3>
+          <div id="delete-popup_btns">
+            <button id="popup-btn_y" class="btn">Sim</button>
+            <button id="popup-btn_n" class="btn">Não</button>
+          </div>
+        </div>
+        <div class="popup" id="buy-popup">
+          <h3>Deseja adicinar os ativos abaixo à sua carteira?</h3>
+          <br />
+          <p id="buy-text"></p>
+          <div id="buy-popup_btns">
+            <button id="buy-popup-btn_y" class="btn">Sim</button>
+            <button id="buy-popup-btn_n" class="btn">Não</button>
+          </div>
+        </div>
+        <section id="assets-table">
+          <div class="table_component" role="region" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th id="ticker">TICKER</th>
+                  <th id="score">NOTA</th>
+                  <th id="currPosition">ATUAL</th>
+                  <th id="target">OBJETIVO</th>
+                  <th id="quantity">QUANTIDADE</th>
+                  <th id="price">COTAÇÃO</th>
+                  <th id="balance">SALDO</th>
+                  <th id="edit">EDITAR</th>
+                </tr>
+              </thead>
+              <tbody id="assets-table_body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+      <div id="right-panel" class="column">
+        <section id="value" class="right-panel">
+          <form action="" id="value_form">
+            <label for="value-input"><h3>Saldo para investir:</h3></label>
+            <input type="number" id="value-input" />
+            <div class="btn-div">
+              <button id="calc-btn" class="btn">Calcular</button>
+            </div>
+          </form>
+        </section>
+        <section class="right-panel">
+          <div
+            id="distribution-table"
+            class="table_component"
+            role="region"
+            tabindex="0"
+          >
+            <h3>Rateio</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>TICKER</th>
+                  <th id="qty-dist">QTD.</th>
+                  <th>VALOR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="ticker-0" class="ticker-dist"></td>
+                  <td id="quantity-0" class="quantitity-dist"></td>
+                  <td id="value-0" class="value-dist"></td>
+                </tr>
+                <tr>
+                  <td id="ticker-1"></td>
+                  <td id="quantity-1"></td>
+                  <td id="value-1"></td>
+                </tr>
+                <tr>
+                  <td id="ticker-2"></td>
+                  <td id="quantity-2"></td>
+                  <td id="value-2"></td>
+                </tr>
+                <tr>
+                  <td>TOTAL</td>
+                  <td colspan="2" id="sum-td"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="btn-div">
+              <button id="buy-btn" class="btn">Realizar</button>
+            </div>
+          </div>
+        </section>
+        <section id="balance" class="right-panel">
+          <h3>Saldo Total:</h3>
+          <span id="balance-value"></span>
+        </section>
+        <section class="right-panel">
+          <form action="" id="add-asset">
+            <h3>Adicionar ativo</h3>
+            <label for="add-asset_ticker">Ticker:</label><br />
+            <input list="asset-list" id="add-asset_ticker" /><br />
+            <datalist id="asset-list">
+              <option id="003H11" value="003H11 - FII KINEA CR"></option>
+              <option id="ABCP11" value="ABCP11 - FII G TOWERS"></option>
+              <option id="AERO11" value="AERO11 - FII HECTARE"></option>
+              <option id="AFHI11" value="AFHI11 - FII AJ MALLS"></option>
+              <option id="AIEC11" value="AIEC11 - FII AZPE"></option>
+              <option id="AJFI11" value="AJFI11 - FII ALIANZAC"></option>
+              <option id="ALMI11" value="ALMI11 - FII TORRE NO"></option>
+              <option id="ALZC11" value="ALZC11 - FII ALIANZME"></option>
+              <option id="ALZM11" value="ALZM11 - FII MULT OF1"></option>
+              <option id="ALZR11" value="ALZR11 - FII ALI URB"></option>
+              <option id="ALZT11" value="ALZT11 - FII ALIANZA"></option>
+              <option id="ANCR11" value="ANCR11 - FII ANH EDUC"></option>
+              <option id="ANGC11" value="ANGC11 - FII RIOB RC"></option>
+              <option id="APTO11" value="APTO11 - FII EAGL"></option>
+              <option id="APXM11" value="APXM11 - FII CAIXA AG"></option>
+              <option id="APXR11" value="APXR11 - FII APXU"></option>
+              <option id="APXU11" value="APXU11 - FII AROA"></option>
+              <option id="AROA11" value="AROA11 - FII ARTE"></option>
+              <option id="ARRI11" value="ARRI11 - FII OPPBAL"></option>
+              <option id="ARTE11" value="ARTE11 - FII ARXD R"></option>
+              <option id="ARXD11" value="ARXD11 - FII AUTONOMY"></option>
+              <option id="ASMT11" value="ASMT11 - FII ASA RET"></option>
+              <option id="ASRF11" value="ASRF11 - FII DEL MONT"></option>
+              <option id="ATCR11" value="ATCR11 - FII AERO"></option>
+              <option id="ATSA11" value="ATSA11 - FII HGBL"></option>
+              <option id="ATWN11" value="ATWN11 - FII BTG AGRO"></option>
+              <option id="AURB11" value="AURB11 - FII APXR"></option>
+              <option id="AZPE11" value="AZPE11 - FII AZPL"></option>
+              <option id="AZPL11" value="AZPL11 - FII BEES CRI"></option>
+              <option id="BARI11" value="BARI11 - FII VEREDA"></option>
+              <option id="BBFI11" value="BBFI11 - FII BB FOF"></option>
+              <option id="BBFO11" value="BBFO11 - FII BBIG"></option>
+              <option id="BBIG11" value="BBIG11 - FII BB CORP"></option>
+              <option id="BBRC11" value="BBRC11 - FII BB R PAP"></option>
+              <option id="BCFF11" value="BCFF11 - FII NCH BR"></option>
+              <option id="BCIA11" value="BCIA11 - FII DEA CARE"></option>
+              <option id="BCRI11" value="BCRI11 - FII BANRISUL"></option>
+              <option id="BETW11" value="BETW11 - FII BS2"></option>
+              <option id="BGRB11" value="BGRB11 - FII BLOG"></option>
+              <option id="BGS111" value="BGS111 - FII KILIMA"></option>
+              <option id="BICE11" value="BICE11 - FII BRIO ME"></option>
+              <option id="BIME11" value="BIME11 - FII BRIO II"></option>
+              <option id="BIPD11" value="BIPD11 - FII BRIO V"></option>
+              <option id="BIPE11" value="BIPE11 - FII BRIX"></option>
+              <option id="BLCA11" value="BLCA11 - FII CENU"></option>
+              <option id="BLMG11" value="BLMG11 - FII BR7 SENA"></option>
+              <option id="BLMO11" value="BLMO11 - FII RVBI VBI"></option>
+              <option id="BLOG11" value="BLOG11 - FII BLUE LOG"></option>
+              <option id="BLUE11" value="BLUE11 - FII MINT EDU"></option>
+              <option id="BLUR11" value="BLUR11 - FII DEV ONE"></option>
+              <option id="BMII11" value="BMII11 - FII FIIC"></option>
+              <option id="BMLC11" value="BMLC11 - FII BC FUND"></option>
+              <option id="BNFS11" value="BNFS11 - FII BR MALLS"></option>
+              <option id="BPDR11" value="BPDR11 - FII BASILICA"></option>
+              <option id="BPFF11" value="BPFF11 - FII B VAREJO"></option>
+              <option id="BPLC11" value="BPLC11 - FII BB PROGR"></option>
+              <option id="BPML11" value="BPML11 - FII BTG TAGR"></option>
+              <option id="BRCD11" value="BRCD11 - FII BRESCO"></option>
+              <option id="BRCO11" value="BRCO11 - FII BRIO CRE"></option>
+              <option id="BRCR11" value="BRCR11 - FII CAMPUSFL"></option>
+              <option id="BRHT11" value="BRHT11 - FII ABSOLUTO"></option>
+              <option id="BRIM11" value="BRIM11 - FII BRIO III"></option>
+              <option id="BRIP11" value="BRIP11 - FII BRIO IV"></option>
+              <option id="BRIX11" value="BRIX11 - FII BROF"></option>
+              <option id="BROF11" value="BROF11 - FII BETW"></option>
+              <option id="BRSE11" value="BRSE11 - FII BCIA"></option>
+              <option id="BTAL11" value="BTAL11 - FII CEF CORP"></option>
+              <option id="BTCI11" value="BTCI11 - FII HYPI"></option>
+              <option id="BTHF11" value="BTHF11 - FII BTYU"></option>
+              <option id="BTHI11" value="BTHI11 - FII BTLG"></option>
+              <option id="BTLG11" value="BTLG11 - FII BTHF"></option>
+              <option id="BTML11" value="BTML11 - FII BARZEL"></option>
+              <option id="BTRA11" value="BTRA11 - FII CAIXA CI"></option>
+              <option id="BTSG11" value="BTSG11 - FII BTSP II"></option>
+              <option id="BTSI11" value="BTSI11 - FII CX RBRA2"></option>
+              <option id="BTWR11" value="BTWR11 - FII BTSP I"></option>
+              <option id="BTYU11" value="BTYU11 - FII BTOWERS"></option>
+              <option id="BVAR11" value="BVAR11 - FII BTG SHOP"></option>
+              <option id="BZEL11" value="BZEL11 - FII BPDR"></option>
+              <option id="CACR11" value="CACR11 - FII CBOP PAX"></option>
+              <option id="CARE11" value="CARE11 - FII RTEL"></option>
+              <option id="CBOP11" value="CBOP11 - FII BLCA VBI"></option>
+              <option id="CCME11" value="CCME11 - FII CCVA"></option>
+              <option id="CCVA11" value="CCVA11 - FII CPHBC UR"></option>
+              <option id="CENU11" value="CENU11 - FII CF2"></option>
+              <option id="CEOC11" value="CEOC11 - FII ALMIRANT"></option>
+              <option id="CFHI11" value="CFHI11 - FII CF3 IMOB"></option>
+              <option id="CFII11" value="CFII11 - FII CJCTOWER"></option>
+              <option id="CIXM11" value="CIXM11 - FII CIX REND"></option>
+              <option id="CIXR11" value="CIXR11 - FII CLAVE IN"></option>
+              <option id="CJCT11" value="CJCT11 - FII CIXM"></option>
+              <option id="CJFI11" value="CJFI11 - FII S F LIMA"></option>
+              <option id="CLIN11" value="CLIN11 - FII COSMIC"></option>
+              <option id="CNES11" value="CNES11 - FII CEO CCP"></option>
+              <option id="CPFF11" value="CPFF11 - FII CAPI SEC"></option>
+              <option id="CPLG11" value="CPLG11 - FII CPOF"></option>
+              <option id="CPOF11" value="CPOF11 - FII CAP REIT"></option>
+              <option id="CPSH11" value="CPSH11 - CARTESIA FII"></option>
+              <option id="CPTS11" value="CPTS11 - FII CPSH"></option>
+              <option id="CPUR11" value="CPUR11 - FII CPLG"></option>
+              <option id="CRFF11" value="CRFF11 - FII CX RBRAV"></option>
+              <option id="CSMC11" value="CSMC11 - FII RENV"></option>
+              <option id="CTXT11" value="CTXT11 - FII CJ"></option>
+              <option id="CVBI11" value="CVBI11 - FII MAUA"></option>
+              <option id="CVPR11" value="CVPR11 - FII CYRELA"></option>
+              <option id="CXAG11" value="CXAG11 - FII HBC REN"></option>
+              <option id="CXCE11" value="CXCE11 - FII CX TRX"></option>
+              <option id="CXCI11" value="CXCI11 - FII CX CEDAE"></option>
+              <option id="CXCO11" value="CXCO11 - FII HOUSI"></option>
+              <option id="CXRI11" value="CXRI11 - FII CANUMA"></option>
+              <option id="CXTL11" value="CXTL11 - FII C TEXTIL"></option>
+              <option id="CYCR11" value="CYCR11 - FII CYLD"></option>
+              <option id="CYLD11" value="CYLD11 - FII DAMA"></option>
+              <option id="DAMA11" value="DAMA11 - FII ASA MET"></option>
+              <option id="DAMT11" value="DAMT11 - FII DOVEL"></option>
+              <option id="DEVA11" value="DEVA11 - FII DIAMANTE"></option>
+              <option id="DLMT11" value="DLMT11 - FII DEVA PRO"></option>
+              <option id="DOVL11" value="DOVL11 - FII EDGE"></option>
+              <option id="DPRO11" value="DPRO11 - FII DEVANT"></option>
+              <option id="DRIT11" value="DRIT11 - FII MULT OF2"></option>
+              <option id="DVFF11" value="DVFF11 - FII RB CFOF"></option>
+              <option id="DVLP11" value="DVLP11 - FII DVLT"></option>
+              <option id="DVLT11" value="DVLT11 - FII PMFO"></option>
+              <option id="EAGL11" value="EAGL11 - FII NEWPORT"></option>
+              <option id="EDFO11" value="EDFO11 - FII EUROPAR"></option>
+              <option id="EDGA11" value="EDGA11 - FII ELDORADO"></option>
+              <option id="EDGE11" value="EDGE11 - FII EMET"></option>
+              <option id="EGDB11" value="EGDB11 - FII OURINVES"></option>
+              <option id="EGYR11" value="EGYR11 - FII EQI RECE"></option>
+              <option id="ELDO11" value="ELDO11 - FII CRIANCA"></option>
+              <option id="EMET11" value="EMET11 - FII ENERGY"></option>
+              <option id="EQIR11" value="EQIR11 - FII ESTOQ RJ"></option>
+              <option id="ERCR11" value="ERCR11 - FII EUROPA"></option>
+              <option id="ERPA11" value="ERPA11 - FII EVEN II"></option>
+              <option id="ESTQ11" value="ESTQ11 - FII POLO SHO"></option>
+              <option id="EURO11" value="EURO11 - FII EZTB"></option>
+              <option id="EXES11" value="EXES11 - FII FL RECEB"></option>
+              <option id="EZTB11" value="EZTB11 - FII ABC IMOB"></option>
+              <option id="FAED11" value="FAED11 - FII BMBRC LC"></option>
+              <option id="FAMB11" value="FAMB11 - FII GALERIA"></option>
+              <option id="FARU11" value="FARU11 - FII FATOR VE"></option>
+              <option id="FATN11" value="FATN11 - FII BRCD"></option>
+              <option id="FAVM11" value="FAVM11 - FII GV BLUE"></option>
+              <option id="FBTS11" value="FBTS11 - FII VOT LOG"></option>
+              <option id="FCFL11" value="FCFL11 - FII CENESP"></option>
+              <option id="FIGS11" value="FIGS11 - FII VX XVI"></option>
+              <option id="FIGV11" value="FIGV11 - FII PLURAL R"></option>
+              <option id="FIIB11" value="FIIB11 - FII INFRA RE"></option>
+              <option id="FIIC11" value="FIIC11 - FII RBRDESIV"></option>
+              <option id="FIIP11" value="FIIP11 - FII RB II"></option>
+              <option id="FINF11" value="FINF11 - FII JKD"></option>
+              <option id="FISC11" value="FISC11 - FII SCP"></option>
+              <option id="FISD11" value="FISD11 - FII SEQUOIA"></option>
+              <option id="FIVN11" value="FIVN11 - FII VBII BTS"></option>
+              <option id="FLCR11" value="FLCR11 - FII FARU"></option>
+              <option id="FLMA11" value="FLMA11 - FII EGDB"></option>
+              <option id="FLNR11" value="FLNR11 - FII JCIN"></option>
+              <option id="FLRP11" value="FLRP11 - FII HEDGELOG"></option>
+              <option id="FMOB11" value="FMOB11 - FII IMMOB V"></option>
+              <option id="FMOF11" value="FMOF11 - FII MV9"></option>
+              <option id="FPAB11" value="FPAB11 - FII QUINTAS"></option>
+              <option id="FPNG11" value="FPNG11 - FII POLO II"></option>
+              <option id="FRHY11" value="FRHY11 - FII GUARDIAN"></option>
+              <option id="FTCE11" value="FTCE11 - FII OURI JPP"></option>
+              <option id="FTRE11" value="FTRE11 - FII BC FFII"></option>
+              <option id="FVPQ11" value="FVPQ11 - FII VIDANOVA"></option>
+              <option id="GAME11" value="GAME11 - FII SDI LOG"></option>
+              <option id="GARE11" value="GARE11 - FII S VAREJO"></option>
+              <option id="GCDL11" value="GCDL11 - FII GFDL"></option>
+              <option id="GCOI11" value="GCOI11 - FII GAZIT"></option>
+              <option id="GCRI11" value="GCRI11 - FII GALAP SP"></option>
+              <option id="GFDL11" value="GFDL11 - FII GLPF"></option>
+              <option id="GGRC11" value="GGRC11 - FII GREEN RO"></option>
+              <option id="GLOG11" value="GLOG11 - FII MALLS BP"></option>
+              <option id="GLPF11" value="GLPF11 - FII GLPG CRI"></option>
+              <option id="GRRO11" value="GRRO11 - FII GP RCFA"></option>
+              <option id="GRUL11" value="GRUL11 - FII ICNE"></option>
+              <option id="GSFI11" value="GSFI11 - FII GEN SHOP"></option>
+              <option id="GTWR11" value="GTWR11 - FII HERMES"></option>
+              <option id="GZIT11" value="GZIT11 - FII GENERAL"></option>
+              <option id="HAAA11" value="HAAA11 - FII HATRIUM"></option>
+              <option id="HABT11" value="HABT11 - FII HAZ"></option>
+              <option id="HBCR11" value="HBCR11 - FII BLUE"></option>
+              <option id="HCHG11" value="HCHG11 - FII HEDGEAAA"></option>
+              <option id="HCOF11" value="HCOF11 - FII HEDGE DV"></option>
+              <option id="HCRI11" value="HCRI11 - FII LOURDES"></option>
+              <option id="HCST11" value="HCST11 - FII HECT CRI"></option>
+              <option id="HCTR11" value="HCTR11 - FII HECT DES"></option>
+              <option id="HDEL11" value="HDEL11 - FII FLORIPA"></option>
+              <option id="HDOF11" value="HDOF11 - FII HREALTY"></option>
+              <option id="HERM11" value="HERM11 - FII UNIMED C"></option>
+              <option id="HFOF11" value="HFOF11 - FII YEES"></option>
+              <option id="HGBL11" value="HGBL11 - FII HEDGEBS"></option>
+              <option id="HGBS11" value="HGBS11 - FII HCOF"></option>
+              <option id="HGCR11" value="HGCR11 - FII HGRU PAX"></option>
+              <option id="HGFF11" value="HGFF11 - FII HGLG PAX"></option>
+              <option id="HGIC11" value="HGIC11 - FII HIRE LOG"></option>
+              <option id="HGLG11" value="HGLG11 - FII PATL VBI"></option>
+              <option id="HGPO11" value="HGPO11 - FII HGCR PAX"></option>
+              <option id="HGRE11" value="HGRE11 - FII HGFF PAX"></option>
+              <option id="HGRU11" value="HGRU11 - FII PERFORMA"></option>
+              <option id="HILG11" value="HILG11 - FII HSI CRI"></option>
+              <option id="HLMB11" value="HLMB11 - FII SBCLOG"></option>
+              <option id="HLOG11" value="HLOG11 - FII HOFFICEI"></option>
+              <option id="HOFC11" value="HOFC11 - FII HEDGE OF"></option>
+              <option id="HOMS11" value="HOMS11 - FII SUNO EL"></option>
+              <option id="HOSI11" value="HOSI11 - FII MOGNO HT"></option>
+              <option id="HPDP11" value="HPDP11 - FII HTOPFOF3"></option>
+              <option id="HRDF11" value="HRDF11 - FII HEDGEREC"></option>
+              <option id="HREC11" value="HREC11 - FII HEDGE SD"></option>
+              <option id="HRES11" value="HRES11 - INTERMED NT"></option>
+              <option id="HSAF11" value="HSAF11 - FII HSI LOG"></option>
+              <option id="HSLG11" value="HSLG11 - FII HSI MALL"></option>
+              <option id="HSML11" value="HSML11 - FII HSIRENDA"></option>
+              <option id="HSRE11" value="HSRE11 - FII HUSI"></option>
+              <option id="HTMX11" value="HTMX11 - FII MAX RET"></option>
+              <option id="HUCG11" value="HUCG11 - FII H UNIMED"></option>
+              <option id="HUSC11" value="HUSC11 - FII INDL BR"></option>
+              <option id="HUSI11" value="HUSI11 - FII IVCI"></option>
+              <option id="HYPI11" value="HYPI11 - FII HIRE RES"></option>
+              <option id="IBBP11" value="IBBP11 - FII ISCJ"></option>
+              <option id="IBCR11" value="IBCR11 - FII IDUA"></option>
+              <option id="ICNE11" value="ICNE11 - FII RENOVA"></option>
+              <option id="ICRI11" value="ICRI11 - FII ITAU TEM"></option>
+              <option id="IDUA11" value="IDUA11 - FII GUARD MU"></option>
+              <option id="IMMV11" value="IMMV11 - FII INDE"></option>
+              <option id="IMOF11" value="IMOF11 - FII QTZD"></option>
+              <option id="INDE11" value="INDE11 - FII INTER LG"></option>
+              <option id="INLG11" value="INLG11 - FII INTER RD"></option>
+              <option id="INRD11" value="INRD11 - FII INTER IP"></option>
+              <option id="IRBL11" value="IRBL11 - FII IRIM"></option>
+              <option id="IRDM11" value="IRDM11 - FII VCHG"></option>
+              <option id="IRIM11" value="IRIM11 - FII CI IPCA"></option>
+              <option id="ISCJ11" value="ISCJ11 - FII IRB INT"></option>
+              <option id="ITIP11" value="ITIP11 - FII INTER IT"></option>
+              <option id="ITIT11" value="ITIT11 - FII IBBP"></option>
+              <option id="ITRI11" value="ITRI11 - FII JCDB 02"></option>
+              <option id="IVCI11" value="IVCI11 - FII GRUL"></option>
+              <option id="JASC11" value="JASC11 - FII JBFO FOF"></option>
+              <option id="JBFO11" value="JBFO11 - FII JFDCAM"></option>
+              <option id="JCCJ11" value="JCCJ11 - FII JPP CAPI"></option>
+              <option id="JCDA11" value="JCDA11 - FII JASC REN"></option>
+              <option id="JCDB11" value="JCDB11 - FII JCDA I"></option>
+              <option id="JCIN11" value="JCIN11 - FII HLMB"></option>
+              <option id="JFLL11" value="JFLL11 - FII RDLS"></option>
+              <option id="JKDF11" value="JKDF11 - FII JKE"></option>
+              <option id="JKEF11" value="JKEF11 - FII MEMORIAL"></option>
+              <option id="JPPA11" value="JPPA11 - FII JS A FIN"></option>
+              <option id="JPPC11" value="JPPC11 - FII JPPA CRI"></option>
+              <option id="JSAF11" value="JSAF11 - FII JS REAL"></option>
+              <option id="JSCR11" value="JSCR11 - FII JT PREV"></option>
+              <option id="JSRE11" value="JSRE11 - FII JSCR"></option>
+              <option id="JTPR11" value="JTPR11 - FII BGS1"></option>
+              <option id="KCRE11" value="KCRE11 - FII KINEA DL"></option>
+              <option id="KEVE11" value="KEVE11 - FII EXES"></option>
+              <option id="KFEN11" value="KFEN11 - FII KINEA HF"></option>
+              <option id="KFOF11" value="KFOF11 - FII PULV"></option>
+              <option id="KISU11" value="KISU11 - FII KIVO"></option>
+              <option id="KIVO11" value="KIVO11 - FII KRES"></option>
+              <option id="KLOG11" value="KLOG11 - FII KFEN"></option>
+              <option id="KNCR11" value="KNCR11 - FII KINEA SC"></option>
+              <option id="KNHF11" value="KNHF11 - FII KINEA HY"></option>
+              <option id="KNHY11" value="KNHY11 - FII KII REAL"></option>
+              <option id="KNIP11" value="KNIP11 - FII KOPI"></option>
+              <option id="KNPR11" value="KNPR11 - FII KPMR"></option>
+              <option id="KNRE11" value="KNRE11 - FII KINEA IP"></option>
+              <option id="KNRI11" value="KNRI11 - FII KINEA RI"></option>
+              <option id="KNSC11" value="KNSC11 - FII KINEA UN"></option>
+              <option id="KNUQ11" value="KNUQ11 - FII LAGO PDR"></option>
+              <option id="KOPI11" value="KOPI11 - FII KORE"></option>
+              <option id="KORE11" value="KORE11 - FII KINEA PR"></option>
+              <option id="KPMR11" value="KPMR11 - FII KPRP"></option>
+              <option id="KPRP11" value="KPRP11 - FII KINEA"></option>
+              <option id="KRES11" value="KRES11 - FII KINEA CO"></option>
+              <option id="LASC11" value="LASC11 - FII LIFE"></option>
+              <option id="LFTT11" value="LFTT11 - FII MANATI"></option>
+              <option id="LIFE11" value="LIFE11 - FII LOFT I"></option>
+              <option id="LKDV11" value="LKDV11 - FII RBR III"></option>
+              <option id="LLAO11" value="LLAO11 - BTG HOTEL FI"></option>
+              <option id="LOFT11" value="LOFT11 - FII LOFT II"></option>
+              <option id="LPLP11" value="LPLP11 - FII LAV SLDZ"></option>
+              <option id="LRDI11" value="LRDI11 - FII MAUA MPD"></option>
+              <option id="LRED11" value="LRED11 - FII LSOI"></option>
+              <option id="LSOI11" value="LSOI11 - FII LEGATUS"></option>
+              <option id="LTMT11" value="LTMT11 - FII DVLP"></option>
+              <option id="LVBI11" value="LVBI11 - FII BRHOTEIS"></option>
+              <option id="MALL11" value="MALL11 - FII GGRCOVEP"></option>
+              <option id="MANA11" value="MANA11 - FII MMVE OP"></option>
+              <option id="MAXR11" value="MAXR11 - FII NOVOHORI"></option>
+              <option id="MBBI11" value="MBBI11 - FII MCEM"></option>
+              <option id="MCCI11" value="MCCI11 - FII A TOWN"></option>
+              <option id="MCEM11" value="MCEM11 - FII MERITO I"></option>
+              <option id="MCFY11" value="MCFY11 - FII MGRI"></option>
+              <option id="MCLO11" value="MCLO11 - FII MAUA RE"></option>
+              <option id="MCRE11" value="MCRE11 - FII MAXI REN"></option>
+              <option id="MFII11" value="MFII11 - FII MCFY"></option>
+              <option id="MGHT11" value="MGHT11 - FII PVBI VBI"></option>
+              <option id="MGRI11" value="MGRI11 - FII MULTSHOP"></option>
+              <option id="MINT11" value="MINT11 - FII PATRI IV"></option>
+              <option id="MMPD11" value="MMPD11 - FII XPRE"></option>
+              <option id="MMVE11" value="MMVE11 - FII MCLO"></option>
+              <option id="MOFF11" value="MOFF11 - FII NAVI CRI"></option>
+              <option id="MTOF11" value="MTOF11 - FII ALIANZAT"></option>
+              <option id="MVFI11" value="MVFI11 - FII OURILOG"></option>
+              <option id="MXRF11" value="MXRF11 - FII MB BI"></option>
+              <option id="N4V111" value="N4V111 - FII IRIDIUM"></option>
+              <option id="NAUI11" value="NAUI11 - FII TISHMAN"></option>
+              <option id="NAVT11" value="NAVT11 - FII NAVI RSD"></option>
+              <option id="NCHB11" value="NCHB11 - FII BTG CRI"></option>
+              <option id="NCRI11" value="NCRI11 - FII NAVI TOT"></option>
+              <option id="NEWL11" value="NEWL11 - FII NEWRU"></option>
+              <option id="NEWU11" value="NEWU11 - FII NOVA I"></option>
+              <option id="NSLU11" value="NSLU11 - FII HOTEL MX"></option>
+              <option id="NVHO11" value="NVHO11 - FII D PEDRO"></option>
+              <option id="NVIF11" value="NVIF11 - FII OCTO"></option>
+              <option id="OBAL11" value="OBAL11 - FII OPPORTUN"></option>
+              <option id="OCRE11" value="OCRE11 - FII ONDV"></option>
+              <option id="ONDV11" value="ONDV11 - FII ATRIO"></option>
+              <option id="OPTM11" value="OPTM11 - FII RIZA TX"></option>
+              <option id="OUJP11" value="OUJP11 - FII PNCR"></option>
+              <option id="OULG11" value="OULG11 - FII PANAMBY"></option>
+              <option id="PABY11" value="PABY11 - FII P NEGRA"></option>
+              <option id="PATA11" value="PATA11 - FII PATC VBI"></option>
+              <option id="PATB11" value="PATB11 - FII RBRHGRAD"></option>
+              <option id="PATC11" value="PATC11 - FII HGRE PAX"></option>
+              <option id="PATL11" value="PATL11 - FII HGPO PAX"></option>
+              <option id="PBLV11" value="PBLV11 - FII IMOF I"></option>
+              <option id="PCAS11" value="PCAS11 - FII P VARGAS"></option>
+              <option id="PEMA11" value="PEMA11 - FII PERSONAL"></option>
+              <option id="PLCR11" value="PLCR11 - FII PLUS"></option>
+              <option id="PLRI11" value="PLRI11 - FII PRAIA CS"></option>
+              <option id="PMFO11" value="PMFO11 - FII SPGM"></option>
+              <option id="PMIS11" value="PMIS11 - FII PARK PAR"></option>
+              <option id="PNCR11" value="PNCR11 - FII PANORAMA"></option>
+              <option id="PNDL11" value="PNDL11 - FII LASTMILE"></option>
+              <option id="PNLM11" value="PNLM11 - FII PAN PROP"></option>
+              <option id="PNPR11" value="PNPR11 - FII PNRC"></option>
+              <option id="PNRC11" value="PNRC11 - FII PMIS"></option>
+              <option id="PORD11" value="PORD11 - FII POLO I"></option>
+              <option id="PQAG11" value="PQAG11 - FII PATA"></option>
+              <option id="PQDP11" value="PQDP11 - FII PTO BAND"></option>
+              <option id="PRSN11" value="PRSN11 - FII POLO CRI"></option>
+              <option id="PRSV11" value="PRSV11 - FII PROLOGIS"></option>
+              <option id="PULV11" value="PULV11 - FII HOMS"></option>
+              <option id="PVBI11" value="PVBI11 - FII DEVA FOF"></option>
+              <option id="QAGR11" value="QAGR11 - FII BLMO VBI"></option>
+              <option id="QNTS11" value="QNTS11 - FII RBR PCRI"></option>
+              <option id="QTZD11" value="QTZD11 - FII RZZV"></option>
+              <option id="RBDS11" value="RBDS11 - FII RBRES IV"></option>
+              <option id="RBED11" value="RBED11 - FII RIOB VA"></option>
+              <option id="RBFF11" value="RBFF11 - FII MERC BR"></option>
+              <option id="RBHG11" value="RBHG11 - FII RB YIELD"></option>
+              <option id="RBHY11" value="RBHY11 - FII RIOB FF"></option>
+              <option id="RBIR11" value="RBIR11 - FII RBCAP LG"></option>
+              <option id="RBLG11" value="RBLG11 - FII RBCAP RI"></option>
+              <option id="RBOP11" value="RBOP11 - FII RIOB RR"></option>
+              <option id="RBRD11" value="RBRD11 - FII RB TFO"></option>
+              <option id="RBRF11" value="RBRF11 - FII RBR FEED"></option>
+              <option id="RBRI11" value="RBRI11 - FII SPX SYN"></option>
+              <option id="RBRL11" value="RBRL11 - FII RBR MULT"></option>
+              <option id="RBRP11" value="RBRP11 - FII ANGICO"></option>
+              <option id="RBRR11" value="RBRR11 - FII REC RECE"></option>
+              <option id="RBRS11" value="RBRS11 - FII RIZA AKN"></option>
+              <option id="RBRX11" value="RBRX11 - FII RBR PR"></option>
+              <option id="RBRY11" value="RBRY11 - FII RBR PROP"></option>
+              <option id="RBTS11" value="RBTS11 - FII RBRALPHA"></option>
+              <option id="RBVA11" value="RBVA11 - FII RIONEGRO"></option>
+              <option id="RCFA11" value="RCFA11 - FII HABIT II"></option>
+              <option id="RCFF11" value="RCFF11 - FII RDCI"></option>
+              <option id="RCKF11" value="RCKF11 - FII SANT PAP"></option>
+              <option id="RCRB11" value="RCRB11 - FII RIOB ED"></option>
+              <option id="RDCI11" value="RDCI11 - FII RDLI"></option>
+              <option id="RDIV11" value="RDIV11 - FII LEBLON"></option>
+              <option id="RDLI11" value="RDLI11 - FII SHIP"></option>
+              <option id="RDLS11" value="RDLS11 - FII JHSF CJ"></option>
+              <option id="RECD11" value="RECD11 - FII RMBS"></option>
+              <option id="RECM11" value="RECM11 - FII RBCRI IV"></option>
+              <option id="RECR11" value="RECR11 - FII REC REND"></option>
+              <option id="RECT11" value="RECT11 - FII SHOP PDP"></option>
+              <option id="REIT11" value="REIT11 - FII SJ AU"></option>
+              <option id="RELG11" value="RELG11 - FII CVBI VBI"></option>
+              <option id="RENV11" value="RENV11 - FII CVPAR"></option>
+              <option id="RFOF11" value="RFOF11 - FII VOTP V"></option>
+              <option id="RINV11" value="RINV11 - FII RECD"></option>
+              <option id="RMAI11" value="RMAI11 - FII REAL INV"></option>
+              <option id="RMBS11" value="RMBS11 - FII RECM"></option>
+              <option id="RNDP11" value="RNDP11 - FII BGRB"></option>
+              <option id="RNGO11" value="RNGO11 - FII SC 401"></option>
+              <option id="RNOV11" value="RNOV11 - FII IMOB III"></option>
+              <option id="ROOF11" value="ROOF11 - FII SOFF"></option>
+              <option id="RPRI11" value="RPRI11 - FII TOPP"></option>
+              <option id="RRCI11" value="RRCI11 - FII RB CAP I"></option>
+              <option id="RSPD11" value="RSPD11 - FII RBRESID2"></option>
+              <option id="RTEL11" value="RTEL11 - FII ATHENA I"></option>
+              <option id="RVBI11" value="RVBI11 - FII VECTIS"></option>
+              <option id="RZAK11" value="RZAK11 - FII ARCTIUM"></option>
+              <option id="RZAT11" value="RZAT11 - FII RZLC"></option>
+              <option id="RZLC11" value="RZLC11 - FII ROCK"></option>
+              <option id="RZTR11" value="RZTR11 - FII ROOFTOPI"></option>
+              <option id="RZZI11" value="RZZI11 - FII RZZR"></option>
+              <option id="RZZR11" value="RZZR11 - FII RBRESID3"></option>
+              <option id="RZZV11" value="RZZV11 - FII RZZI"></option>
+              <option id="SADI11" value="SADI11 - FII SAPI"></option>
+              <option id="SAIC11" value="SAIC11 - FII TORRE AL"></option>
+              <option id="SALI11" value="SALI11 - FII VCTH"></option>
+              <option id="SAPI11" value="SAPI11 - FII SANT REN"></option>
+              <option id="SARE11" value="SARE11 - FII DOMINGOS"></option>
+              <option id="SBCL11" value="SBCL11 - FII FRONT"></option>
+              <option id="SCPF11" value="SCPF11 - FII SF"></option>
+              <option id="SEED11" value="SEED11 - FII HEDGEPDP"></option>
+              <option id="SEQR11" value="SEQR11 - FII W PLAZA"></option>
+              <option id="SFFI11" value="SFFI11 - FII HIGIENOP"></option>
+              <option id="SHDP11" value="SHDP11 - FII SIA CORP"></option>
+              <option id="SHIP11" value="SHIP11 - FII RBR LOG"></option>
+              <option id="SHOP11" value="SHOP11 - FII MTGESTAO"></option>
+              <option id="SHPH11" value="SHPH11 - FII SMRE"></option>
+              <option id="SJAU11" value="SJAU11 - FII SOLARIUM"></option>
+              <option id="SLDZ11" value="SLDZ11 - FII LRED"></option>
+              <option id="SMRE11" value="SMRE11 - FII TG ATIVO"></option>
+              <option id="SNCI11" value="SNCI11 - FII SUPREMO"></option>
+              <option id="SNEL11" value="SNEL11 - FII BLUE REC"></option>
+              <option id="SNFF11" value="SNFF11 - FII SUNO LG"></option>
+              <option id="SNLG11" value="SNLG11 - FII SNME"></option>
+              <option id="SNME11" value="SNME11 - FII SUNO CRI"></option>
+              <option id="SOFF11" value="SOFF11 - FII TOUR V"></option>
+              <option id="SOLR11" value="SOLR11 - FII SP DOWNT"></option>
+              <option id="SPAF11" value="SPAF11 - FII SPECIALE"></option>
+              <option id="SPDE11" value="SPDE11 - FII WHG REAL"></option>
+              <option id="SPG211" value="SPG211 - FII SPXM"></option>
+              <option id="SPGM11" value="SPGM11 - FII SPG2"></option>
+              <option id="SPMO11" value="SPMO11 - FII TELLUS"></option>
+              <option id="SPTW11" value="SPTW11 - FII SPA"></option>
+              <option id="SPVJ11" value="SPVJ11 - FII KINEAFOF"></option>
+              <option id="SPXG11" value="SPXG11 - FII SPXL"></option>
+              <option id="SPXL11" value="SPXL11 - FII STARX"></option>
+              <option id="SPXM11" value="SPXM11 - FII SPXG"></option>
+              <option id="SPXS11" value="SPXS11 - FII APEX MS"></option>
+              <option id="STRX11" value="STRX11 - FII SURE"></option>
+              <option id="SURE11" value="SURE11 - FII SUNOFOFI"></option>
+              <option id="TCIN11" value="TCIN11 - FII GCDL"></option>
+              <option id="TCPF11" value="TCPF11 - FII TRXY"></option>
+              <option id="TELD11" value="TELD11 - FII TELM"></option>
+              <option id="TELM11" value="TELM11 - FII TEL PROP"></option>
+              <option id="TEPP11" value="TEPP11 - FII NAUI"></option>
+              <option id="TGAR11" value="TGAR11 - FII TGRU"></option>
+              <option id="TGRU11" value="TGRU11 - FII TM"></option>
+              <option id="TJKB11" value="TJKB11 - FII TORDE EI"></option>
+              <option id="TMFI11" value="TMFI11 - FII BARI VBI"></option>
+              <option id="TMPS11" value="TMPS11 - FII ITRI"></option>
+              <option id="TOPP11" value="TOPP11 - FII REAGMULT"></option>
+              <option id="TORD11" value="TORD11 - FII TRANSINC"></option>
+              <option id="TRBL11" value="TRBL11 - FII ANCAR IC"></option>
+              <option id="TRNT11" value="TRNT11 - FII WTC SP"></option>
+              <option id="TRXB11" value="TRXB11 - FII URHF"></option>
+              <option id="TRXF11" value="TRXF11 - FII TRX R II"></option>
+              <option id="TRXY11" value="TRXY11 - FII TRX REAL"></option>
+              <option id="TSER11" value="TSER11 - FII TIVIO RI"></option>
+              <option id="TSNC11" value="TSNC11 - FII TREECORP"></option>
+              <option id="TVRI11" value="TVRI11 - FII V MASTER"></option>
+              <option id="URHF11" value="URHF11 - FII URCA REN"></option>
+              <option id="URPR11" value="URPR11 - FII V2EDCORP"></option>
+              <option id="VCHG11" value="VCHG11 - FII FLNR"></option>
+              <option id="VCJR11" value="VCJR11 - FII VECT REN"></option>
+              <option id="VCRI11" value="VCRI11 - FII VINCI IU"></option>
+              <option id="VCRR11" value="VCRR11 - FII VCSC"></option>
+              <option id="VCSC11" value="VCSC11 - FII VQ LAJES"></option>
+              <option id="VCTH11" value="VCTH11 - FII VERS CRI"></option>
+              <option id="VDSV11" value="VDSV11 - FII VINCI CR"></option>
+              <option id="VERE11" value="VERE11 - FII V PARQUE"></option>
+              <option id="VGHF11" value="VGHF11 - FII VGRI"></option>
+              <option id="VGII11" value="VGII11 - FII VALOR HE"></option>
+              <option id="VGIP11" value="VGIP11 - FII VGII"></option>
+              <option id="VGIR11" value="VGIR11 - FII VALORAIP"></option>
+              <option id="VGRI11" value="VGRI11 - FII QAGR VBI"></option>
+              <option id="VIDS11" value="VIDS11 - FII VIC VIN"></option>
+              <option id="VIFI11" value="VIFI11 - FII VINCI LG"></option>
+              <option id="VILG11" value="VILG11 - FII VINCI OF"></option>
+              <option id="VINO11" value="VINO11 - FII VIOL"></option>
+              <option id="VIOL11" value="VIOL11 - FII VINCI SC"></option>
+              <option id="VISC11" value="VISC11 - FII WARREN"></option>
+              <option id="VIUR11" value="VIUR11 - FII VINCI IF"></option>
+              <option id="VJFD11" value="VJFD11 - FII JFL LIV"></option>
+              <option id="VLJS11" value="VLJS11 - FII VENUS"></option>
+              <option id="VOTS11" value="VOTS11 - FII TJK REND"></option>
+              <option id="VPSI11" value="VPSI11 - FII A BRANCA"></option>
+              <option id="VRTA11" value="VRTA11 - FII VRTM"></option>
+              <option id="VRTM11" value="VRTM11 - FII BRASILIO"></option>
+              <option id="VSHO11" value="VSHO11 - FII AVM"></option>
+              <option id="VSLH11" value="VSLH11 - FII VIC DES"></option>
+              <option id="VTLT11" value="VTLT11 - FII VOT SHOP"></option>
+              <option id="VTPA11" value="VTPA11 - FII VOTP XII"></option>
+              <option id="VTPL11" value="VTPL11 - FII REC LOG"></option>
+              <option id="VTVI11" value="VTVI11 - FII PARQ ANH"></option>
+              <option id="VTXI11" value="VTXI11 - FII FTRE"></option>
+              <option id="VVCO11" value="VVCO11 - FII MULT REN"></option>
+              <option id="VVCR11" value="VVCR11 - FII V2 RENDA"></option>
+              <option id="VVMR11" value="VVMR11 - FII V2 RECE"></option>
+              <option id="VVRI11" value="VVRI11 - FII VALREIII"></option>
+              <option id="VXXV11" value="VXXV11 - FII PLURAL L"></option>
+              <option id="WHGR11" value="WHGR11 - FII XP MACAE"></option>
+              <option id="WPLZ11" value="WPLZ11 - FII REIT RIV"></option>
+              <option id="WSEC11" value="WSEC11 - FII WHG F SP"></option>
+              <option id="WTSP11" value="WTSP11 - FII LVBI VBI"></option>
+              <option id="XPCE11" value="XPCE11 - FII YUCA"></option>
+              <option id="XPCI11" value="XPCI11 - FII XP INDL"></option>
+              <option id="XPCM11" value="XPCM11 - FII XP CRED"></option>
+              <option id="XPIN11" value="XPIN11 - FII XP LOG"></option>
+              <option id="XPLG11" value="XPLG11 - FII XP MALLS"></option>
+              <option id="XPML11" value="XPML11 - FII XP PROP"></option>
+              <option id="XPPR11" value="XPPR11 - FII XP SELEC"></option>
+              <option id="XPRE11" value="XPRE11 - FII BREI"></option>
+              <option id="XPSF11" value="XPSF11 - FII XPCE RE"></option>
+              <option id="YEES11" value="YEES11 - FII HGI CRI"></option>
+              <option id="YUFI11" value="YUFI11 - FII ZAGH"></option>
+              <option id="ZAGH11" value="ZAGH11 - FII ZAVIT C"></option>
+              <option id="ZAVC11" value="ZAVC11 - FII ZAVIT R"></option>
+              <option id="ZAVI11" value="ZAVI11 - FII ZION"></option>
+              <option id="ZIFI11" value="ZIFI11 - "></option>
+            </datalist>
+
+            <label for="add-asset_quantity">Quantidade:</label><br />
+            <input type="number" id="add-asset_quantity" /><br />
+            <label for="add-asset_score">Meta: </label>
+            <p style="display: inline" id="rangeValue2">5</p>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value="5"
+              class="slider"
+              id="add-asset_score"
+              oninput="rangeValue2.innerText = this.value"
+            />
+            <div class="btn-div">
+              <button id="add-asset_btn" class="btn">Adicionar</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>

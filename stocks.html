@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balanceador de Carteira</title>
+    <script src="stocks.js" defer type="module"></script>
+    <script
+      src="https://kit.fontawesome.com/01e0f31649.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Balanceador de Carteira</h1>
+      <ul>
+        <li><a style="background-color: #ddd; color: #000000">Ações</a></li>
+        <li><a href="./fiis.html">FIIs</a></li>
+      </ul>
+    </nav>
+    <main>
+      <div id="left-panel" class="column">
+        <div class="popup" id="edit-popup">
+          <h3 id="edit-ticker">ABEV3</h3>
+          <label for="edit-quantity">Quantidade:</label><br />
+          <input type="number" id="edit-quantity" /><br />
+          <label for="edit-score">Meta: </label>
+          <p style="display: inline" id="rangeValue1">5</p>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value="5"
+            class="slider"
+            id="edit-score"
+            oninput="rangeValue1.innerText = this.value"
+          />
+          <div id="edit-popup_btns">
+            <button id="popup-btn_save" class="btn">Salvar</button>
+            <button id="popup-btn_cancel" class="btn">Cancelar</button>
+          </div>
+        </div>
+        <div class="popup" id="delete-popup">
+          <h3>
+            Tem certeza que quer excluir o ativo
+            <span id="delete-ticker">ABEV3</span>?
+          </h3>
+          <div id="delete-popup_btns">
+            <button id="popup-btn_y" class="btn">Sim</button>
+            <button id="popup-btn_n" class="btn">Não</button>
+          </div>
+        </div>
+        <div class="popup" id="buy-popup">
+          <h3>Deseja adicinar os ativos abaixo à sua carteira?</h3>
+          <br />
+          <p id="buy-text">TEST</p>
+          <div id="buy-popup_btns">
+            <button id="buy-popup-btn_y" class="btn">Sim</button>
+            <button id="buy-popup-btn_n" class="btn">Não</button>
+          </div>
+        </div>
+        <section id="assets-table">
+          <div class="table_component" role="region" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th id="ticker">TICKER</th>
+                  <th id="score">NOTA</th>
+                  <th id="currPosition">ATUAL</th>
+                  <th id="target">OBJETIVO</th>
+                  <th id="quantity">QUANTIDADE</th>
+                  <th id="price">COTAÇÃO</th>
+                  <th id="balance">SALDO</th>
+                  <th id="edit">EDITAR</th>
+                </tr>
+              </thead>
+              <tbody id="assets-table_body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+      <div id="right-panel" class="column">
+        <section id="value" class="right-panel">
+          <form action="" id="value_form">
+            <label for="value-input"><h3>Saldo para investir:</h3></label>
+            <input type="number" id="value-input" />
+            <div class="btn-div">
+              <button id="calc-btn" class="btn">Calcular</button>
+            </div>
+          </form>
+        </section>
+        <section class="right-panel">
+          <div
+            id="distribution-table"
+            class="table_component"
+            role="region"
+            tabindex="0"
+          >
+            <h3>Rateio</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>TICKER</th>
+                  <th id="qty-dist">QTD.</th>
+                  <th>VALOR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="ticker-0" class="ticker-dist"></td>
+                  <td id="quantity-0" class="quantitity-dist"></td>
+                  <td id="value-0" class="value-dist"></td>
+                </tr>
+                <tr>
+                  <td id="ticker-1"></td>
+                  <td id="quantity-1"></td>
+                  <td id="value-1"></td>
+                </tr>
+                <tr>
+                  <td id="ticker-2"></td>
+                  <td id="quantity-2"></td>
+                  <td id="value-2"></td>
+                </tr>
+                <tr>
+                  <td>TOTAL</td>
+                  <td colspan="2" id="sum-td"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="btn-div">
+              <button id="buy-btn" class="btn">Realizar</button>
+            </div>
+          </div>
+        </section>
+        <section id="balance" class="right-panel">
+          <h3>Saldo Total:</h3>
+          <span id="balance-value"></span>
+        </section>
+        <section class="right-panel">
+          <form action="" id="add-asset">
+            <h3>Adicionar ativo</h3>
+            <label for="add-asset_ticker">Ticker:</label><br />
+            <input list="asset-list" id="add-asset_ticker" /><br />
+            <datalist id="asset-list">
+              <option id="BBDC4" value="BBDC4 - Banco Bradesco"></option>
+              <option id="HAPV3" value="HAPV3 - Hapvida"></option>
+              <option id="COGN3" value="COGN3 - Cogna"></option>
+              <option id="B3SA3" value="B3SA3 - B3"></option>
+              <option id="ABEV3" value="ABEV3 - Ambev"></option>
+              <option id="PETR4" value="PETR4 - Petrobras"></option>
+              <option id="RAIZ4" value="RAIZ4 - Raízen"></option>
+              <option id="MGLU3" value="MGLU3 - Magazine Luiza"></option>
+              <option id="ASAI3" value="ASAI3 - Assaí"></option>
+              <option id="CVCB3" value="CVCB3 - CVC"></option>
+              <option id="ITSA4" value="ITSA4 - Itaúsa"></option>
+              <option id="VALE3" value="VALE3 - Vale"></option>
+              <option id="WEGE3" value="WEGE3 - WEG"></option>
+              <option id="CSAN3" value="CSAN3 - Cosan"></option>
+              <option id="BBAS3" value="BBAS3 - Banco do Brasil"></option>
+              <option id="ITUB4" value="ITUB4 - Itaú Unibanco"></option>
+              <option id="LREN3" value="LREN3 - Lojas Renner"></option>
+              <option
+                id="AMOB3"
+                value="AMOB3 - Vamos Comércio de Máquinas Linha Amarela S.A."
+              ></option>
+              <option id="CRFB3" value="CRFB3 - Carrefour Brasil"></option>
+              <option id="PRIO3" value="PRIO3 - PetroRio"></option>
+              <option id="RAIL3" value="RAIL3 - Rumo"></option>
+              <option id="RADL3" value="RADL3 - RaiaDrogasil"></option>
+              <option id="AURE3" value="AURE3 - Auren Energia"></option>
+              <option id="CSNA3" value="CSNA3 - Siderúrgica Nacional"></option>
+              <option id="GFSA3" value="GFSA3 - Gafisa"></option>
+              <option id="AZUL4" value="AZUL4 - Azul"></option>
+              <option id="MRVE3" value="MRVE3 - MRV"></option>
+              <option id="CPLE6" value="CPLE6 - Copel"></option>
+              <option id="BEEF3" value="BEEF3 - Minerva"></option>
+              <option id="PETZ3" value="PETZ3 - Petz"></option>
+              <option id="RDOR3" value="RDOR3 - Rede D'Or"></option>
+              <option id="PCAR3" value="PCAR3 - Grupo Pão de Açúcar"></option>
+              <option id="BBDC3" value="BBDC3 - Banco Bradesco"></option>
+              <option id="ANIM3" value="ANIM3 - Ânima Educação"></option>
+              <option id="USIM5" value="USIM5 - Usiminas"></option>
+              <option id="VBBR3" value="VBBR3 - Vibra Energia"></option>
+              <option id="SIMH3" value="SIMH3 - Simpar"></option>
+              <option id="RENT3" value="RENT3 - Localiza"></option>
+              <option id="UGPA3" value="UGPA3 - Ultrapar"></option>
+              <option id="GOLL4" value="GOLL4 - GOL"></option>
+              <option id="ELET3" value="ELET3 - Eletrobras"></option>
+              <option id="CMIG4" value="CMIG4 - Cemig"></option>
+              <option id="VAMO3" value="VAMO3 - Grupo Vamos"></option>
+              <option id="POMO4" value="POMO4 - Marcopolo"></option>
+              <option id="BBSE3" value="BBSE3 - BB Seguridade"></option>
+              <option id="NTCO3" value="NTCO3 - Natura"></option>
+              <option id="ONCO3" value="ONCO3 - Oncoclínicas"></option>
+              <option id="GGBR4" value="GGBR4 - Gerdau"></option>
+              <option id="CCRO3" value="CCRO3 - Grupo CCR"></option>
+              <option id="PETR3" value="PETR3 - Petrobras"></option>
+              <option id="MOVI3" value="MOVI3 - Movida"></option>
+              <option id="ENEV3" value="ENEV3 - Eneva"></option>
+              <option id="BPAC11" value="BPAC11 - Banco BTG Pactual"></option>
+              <option id="EMBR3" value="EMBR3 - Embraer"></option>
+              <option id="IFCM3" value="IFCM3 - Infracommerce"></option>
+              <option id="JBSS3" value="JBSS3 - JBS"></option>
+              <option id="BHIA3" value="BHIA3 - Casas Bahia"></option>
+              <option id="BRAV3" value="BRAV3 - 3R Petroleum"></option>
+              <option id="EQTL3" value="EQTL3 - Equatorial Energia"></option>
+              <option id="CPLE3" value="CPLE3 - Copel"></option>
+              <option id="YDUQ3" value="YDUQ3 - YDUQS"></option>
+              <option id="HYPE3" value="HYPE3 - Hypera"></option>
+              <option id="MULT3" value="MULT3 - Multiplan"></option>
+              <option id="CMIN3" value="CMIN3 - CSN Mineração"></option>
+              <option id="CYRE3" value="CYRE3 - Cyrela"></option>
+              <option id="GMAT3" value="GMAT3 - Grupo Mateus"></option>
+              <option id="BRFS3" value="BRFS3 - BRF"></option>
+              <option id="LWSA3" value="LWSA3 - Locaweb"></option>
+              <option id="GOAU4" value="GOAU4 - Metalúrgica Gerdau"></option>
+              <option id="LJQQ3" value="LJQQ3 - Lojas Quero-Quero"></option>
+              <option id="TIMS3" value="TIMS3 - TIM"></option>
+              <option id="ISAE4" value="ISAE4 - ISA Energia"></option>
+              <option id="ALOS3" value="ALOS3 - Allos"></option>
+              <option id="CEAB3" value="CEAB3 - C&A"></option>
+              <option id="PLPL3" value="PLPL3 - Plano&Plano"></option>
+              <option id="FLRY3" value="FLRY3 - Fleury"></option>
+              <option id="ECOR3" value="ECOR3 - EcoRodovias"></option>
+              <option id="SUZB3" value="SUZB3 - Suzano"></option>
+              <option id="CBAV3" value="CBAV3 - CBA"></option>
+              <option id="JHSF3" value="JHSF3 - JHSF"></option>
+              <option id="TEND3" value="TEND3 - Construtora Tenda"></option>
+              <option id="TOTS3" value="TOTS3 - Totvs"></option>
+              <option id="VIVA3" value="VIVA3 - Vivara"></option>
+              <option id="STBP3" value="STBP3 - Santos Brasil"></option>
+              <option id="MRFG3" value="MRFG3 - Marfrig"></option>
+              <option id="BRAP4" value="BRAP4 - Bradespar"></option>
+              <option
+                id="IGTI11"
+                value="IGTI11 - Jereissati Participações"
+              ></option>
+              <option id="IGTI11" value="IGTI11 - Iguatemi"></option>
+              <option id="MLAS3" value="MLAS3 - Multilaser"></option>
+              <option id="GGPS3" value="GGPS3 - GPS"></option>
+              <option id="BRKM5" value="BRKM5 - Braskem"></option>
+              <option id="QUAL3" value="QUAL3 - Qualicorp"></option>
+              <option id="CXSE3" value="CXSE3 - Caixa Seguridade"></option>
+              <option id="VVEO3" value="VVEO3 - Viveo"></option>
+              <option id="KLBN11" value="KLBN11 - Klabin"></option>
+              <option id="SLCE3" value="SLCE3 - SLC Agrícola"></option>
+              <option id="EZTC3" value="EZTC3 - EZTEC"></option>
+              <option id="PSSA3" value="PSSA3 - Porto Seguro"></option>
+              <option id="ENGI11" value="ENGI11 - Energisa"></option>
+              <option id="SBFG3" value="SBFG3 - Grupo SBF"></option>
+              <option id="AMER3" value="AMER3 - Americanas"></option>
+              <option id="SBSP3" value="SBSP3 - Sabesp"></option>
+              <option id="AZEV4" value="AZEV4 - Azevedo & Travassos"></option>
+              <option id="SRNA3" value="SRNA3 - Serena Energia"></option>
+              <option id="SMFT3" value="SMFT3 - Smart Fit"></option>
+              <option id="DXCO3" value="DXCO3 - Dexco"></option>
+              <option id="RCSL3" value="RCSL3 - Recrusul"></option>
+              <option id="SANB11" value="SANB11 - Banco Santander"></option>
+              <option id="AZZA3" value="AZZA3 - Arezzo"></option>
+              <option id="OIBR3" value="OIBR3 - Oi"></option>
+              <option id="DIRR3" value="DIRR3 - Direcional"></option>
+              <option id="INTB3" value="INTB3 - Intelbras"></option>
+              <option id="CURY3" value="CURY3 - Cury"></option>
+              <option id="PDGR3" value="PDGR3 - PDG Realty"></option>
+              <option id="RAPT4" value="RAPT4 - Randon"></option>
+              <option id="ALPA4" value="ALPA4 - Alpargatas"></option>
+              <option id="BRSR6" value="BRSR6 - Banrisul"></option>
+              <option id="BPAN4" value="BPAN4 - Banco Pan"></option>
+              <option id="LOGG3" value="LOGG3 - LOG CP"></option>
+              <option id="CPFE3" value="CPFE3 - CPFL Energia"></option>
+              <option id="VIVT3" value="VIVT3 - Vivo"></option>
+              <option id="TRIS3" value="TRIS3 - Trisul"></option>
+              <option id="HBSA3" value="HBSA3 - Hidrovias do Brasil"></option>
+              <option id="LAVV3" value="LAVV3 - Lavvi Incorporadora"></option>
+              <option id="TAEE11" value="TAEE11 - Taesa"></option>
+              <option id="RECV3" value="RECV3 - PetroRecôncavo"></option>
+              <option id="CAML3" value="CAML3 - Camil Alimentos"></option>
+              <option id="RCSL4" value="RCSL4 - Recrusul"></option>
+              <option id="PGMN3" value="PGMN3 - Pague Menos"></option>
+              <option id="ELET6" value="ELET6 - Eletrobras"></option>
+              <option id="SAPR4" value="SAPR4 - Sanepar"></option>
+              <option id="EGIE3" value="EGIE3 - Engie"></option>
+              <option id="MDIA3" value="MDIA3 - M. Dias Branco"></option>
+              <option id="ODPV3" value="ODPV3 - Odontoprev"></option>
+              <option id="MILS3" value="MILS3 - Mills"></option>
+              <option id="MYPK3" value="MYPK3 - Iochpe-Maxion"></option>
+              <option id="SMTO3" value="SMTO3 - São Martinho"></option>
+              <option id="JSLG3" value="JSLG3 - JSL"></option>
+              <option id="EVEN3" value="EVEN3 - Even"></option>
+              <option id="ELMD3" value="ELMD3 - Eletromidia"></option>
+              <option id="IRBR3" value="IRBR3 - IRB Brasil RE"></option>
+              <option id="DASA3" value="DASA3 - Dasa"></option>
+              <option id="PRNR3" value="PRNR3 - Priner"></option>
+              <option id="TTEN3" value="TTEN3 - 3tentos"></option>
+              <option id="VULC3" value="VULC3 - Vulcabras"></option>
+              <option id="SEQL3" value="SEQL3 - Sequoia Logística"></option>
+              <option id="CSMG3" value="CSMG3 - COPASA"></option>
+              <option id="JALL3" value="JALL3 - Jalles Machado"></option>
+              <option id="PORT3" value="PORT3 - Wilson Sons"></option>
+              <option id="SEER3" value="SEER3 - Ser Educacional"></option>
+              <option id="FRAS3" value="FRAS3 - Fras-le"></option>
+              <option id="ZAMP3" value="ZAMP3 - Zamp"></option>
+              <option id="AERI3" value="AERI3 - Aeris Energy"></option>
+              <option id="SAPR11" value="SAPR11 - Sanepar"></option>
+              <option id="KEPL3" value="KEPL3 - Kepler Weber"></option>
+              <option id="TFCO4" value="TFCO4 - Track & Field"></option>
+              <option id="GRND3" value="GRND3 - Grendene"></option>
+              <option id="ARML3" value="ARML3 - Armac"></option>
+              <option id="MDNE3" value="MDNE3 - Moura Dubeux"></option>
+              <option id="RANI3" value="RANI3 - Irani"></option>
+              <option id="GUAR3" value="GUAR3 - Guararapes"></option>
+              <option id="KLBN4" value="KLBN4 - Klabin"></option>
+              <option id="NEOE3" value="NEOE3 - Neoenergia"></option>
+              <option id="CASH3" value="CASH3 - Méliuz"></option>
+              <option id="MATD3" value="MATD3 - Mater Dei"></option>
+              <option id="SYNE3" value="SYNE3 - SYN"></option>
+              <option id="CLSA3" value="CLSA3 - ClearSale"></option>
+              <option id="ENJU3" value="ENJU3 - Enjoei"></option>
+              <option id="ALUP11" value="ALUP11 - Alupar"></option>
+              <option id="FIQE3" value="FIQE3 - Unifique"></option>
+              <option id="MEAL3" value="MEAL3 - IMC Alimentação"></option>
+              <option id="POSI3" value="POSI3 - Positivo"></option>
+              <option id="AZEV3" value="AZEV3 - Azevedo & Travassos"></option>
+              <option id="HBOR3" value="HBOR3 - Helbor"></option>
+              <option id="MELK3" value="MELK3 - Melnick"></option>
+              <option id="HBRE3" value="HBRE3 - HBR Realty"></option>
+              <option id="PNVL3" value="PNVL3 - Dimed"></option>
+              <option
+                id="CSED3"
+                value="CSED3 - Cruzeiro do Sul Educacional"
+              ></option>
+              <option id="OPCT3" value="OPCT3 - OceanPact"></option>
+              <option id="ABCB4" value="ABCB4 - Banco ABC Brasil"></option>
+              <option id="WIZC3" value="WIZC3 - Wiz Soluções"></option>
+              <option id="TUPY3" value="TUPY3 - Tupy"></option>
+              <option id="ITUB3" value="ITUB3 - Itaú Unibanco"></option>
+              <option id="MBLY3" value="MBLY3 - Mobly"></option>
+              <option id="PMAM3" value="PMAM3 - Paranapanema"></option>
+              <option id="MTRE3" value="MTRE3 - Mitre Realty"></option>
+              <option id="SOJA3" value="SOJA3 - Boa Safra Sementes"></option>
+              <option id="PTBL3" value="PTBL3 - Portobello"></option>
+              <option id="VTRU3" value="VTRU3 - VITRUBREPCOM"></option>
+              <option id="BMGB4" value="BMGB4 - Banco BMG"></option>
+              <option id="VITT3" value="VITT3 - Vittia"></option>
+              <option id="SHUL4" value="SHUL4 - Schulz"></option>
+              <option id="UCAS3" value="UCAS3 - Unicasa"></option>
+              <option id="AGXY3" value="AGXY3 - AgroGalaxy"></option>
+              <option id="ORVR3" value="ORVR3 - Orizon"></option>
+              <option id="TGMA3" value="TGMA3 - Tegma"></option>
+              <option id="KLBN3" value="KLBN3 - Klabin"></option>
+              <option id="AMAR3" value="AMAR3 - Lojas Marisa"></option>
+              <option id="BRST3" value="BRST3 - Brisanet"></option>
+              <option id="VLID3" value="VLID3 - Valid"></option>
+              <option id="LIGT3" value="LIGT3 - Light"></option>
+              <option id="BMOB3" value="BMOB3 - Bemobi"></option>
+              <option id="FESA4" value="FESA4 - Ferbasa"></option>
+              <option id="AGRO3" value="AGRO3 - BrasilAgro"></option>
+              <option id="DESK3" value="DESK3 - Desktop"></option>
+              <option id="TASA4" value="TASA4 - Taurus"></option>
+              <option id="SAPR3" value="SAPR3 - Sanepar"></option>
+              <option id="USIM3" value="USIM3 - Usiminas"></option>
+              <option id="BIOM3" value="BIOM3 - Biomm"></option>
+              <option id="ITSA3" value="ITSA3 - Itaúsa"></option>
+              <option id="BRBI11" value="BRBI11 - BR Partners"></option>
+              <option id="RNEW4" value="RNEW4 - Renova Energia"></option>
+              <option id="ESPA3" value="ESPA3 - Espaçolaser"></option>
+              <option id="BOBR4" value="BOBR4 - Bombril"></option>
+              <option id="BLAU3" value="BLAU3 - Blau Farmacêutica"></option>
+              <option id="LPSB3" value="LPSB3 - Lopes"></option>
+              <option id="LEVE3" value="LEVE3 - Mahle Metal Leve"></option>
+              <option id="UNIP6" value="UNIP6 - Unipar"></option>
+              <option id="TAEE4" value="TAEE4 - Taesa"></option>
+              <option id="ROMI3" value="ROMI3 - Indústrias ROMI"></option>
+              <option id="TAEE3" value="TAEE3 - Taesa"></option>
+              <option id="TECN3" value="TECN3 - Technos"></option>
+              <option id="ETER3" value="ETER3 - Eternit"></option>
+              <option id="PINE4" value="PINE4 - Banco Pine"></option>
+              <option id="LUPA3" value="LUPA3 - Lupatech"></option>
+              <option id="PFRM3" value="PFRM3 - Profarma"></option>
+              <option id="CMIG3" value="CMIG3 - Cemig"></option>
+              <option id="AMBP3" value="AMBP3 - Ambipar"></option>
+              <option id="POMO3" value="POMO3 - Marcopolo"></option>
+              <option id="SANB3" value="SANB3 - Banco Santander"></option>
+              <option id="RNEW3" value="RNEW3 - Renova Energia"></option>
+              <option id="VIVR3" value="VIVR3 - Viver"></option>
+              <option id="ALPK3" value="ALPK3 - Estapar"></option>
+              <option id="BRAP3" value="BRAP3 - Bradespar"></option>
+              <option id="CAMB3" value="CAMB3 - Cambuci"></option>
+              <option id="CSUD3" value="CSUD3 - CSU Cardsystem"></option>
+              <option id="KRSA3" value="KRSA3 - Kora Saúde"></option>
+              <option id="TCSA3" value="TCSA3 - Tecnisa"></option>
+              <option id="INEP3" value="INEP3 - Inepar"></option>
+              <option id="RDNI3" value="RDNI3 - RNI"></option>
+              <option id="INEP4" value="INEP4 - Inepar"></option>
+              <option id="SCAR3" value="SCAR3 - São Carlos"></option>
+              <option id="LVTC3" value="LVTC3 - WDC Networks"></option>
+              <option id="SANB4" value="SANB4 - Banco Santander"></option>
+              <option id="GOAU3" value="GOAU3 - Metalúrgica Gerdau"></option>
+              <option id="SHOW3" value="SHOW3 - Time For Fun"></option>
+              <option id="EUCA4" value="EUCA4 - Eucatex"></option>
+              <option id="OIBR4" value="OIBR4 - Oi"></option>
+              <option id="LAND3" value="LAND3 - Terra Santa"></option>
+              <option id="DMVF3" value="DMVF3 - D1000 Varejo Farma"></option>
+              <option id="BEES3" value="BEES3 - Banestes"></option>
+              <option id="NGRD3" value="NGRD3 - Neogrid"></option>
+              <option id="DEXP3" value="DEXP3 - Dexxos"></option>
+              <option
+                id="IGTI3"
+                value="IGTI3 - Jereissati Participações"
+              ></option>
+              <option id="IGTI3" value="IGTI3 - Iguatemi"></option>
+              <option id="TRAD3" value="TRAD3 - Traders Club"></option>
+              <option id="LOGN3" value="LOGN3 - Log-In"></option>
+              <option id="PDTC3" value="PDTC3 - Padtec"></option>
+              <option id="TPIS3" value="TPIS3 - Triunfo"></option>
+              <option id="EALT4" value="EALT4 - Electro Aço Altona"></option>
+              <option id="PTNT4" value="PTNT4 - Pettenati"></option>
+              <option id="RSID3" value="RSID3 - Rossi Residencial"></option>
+              <option id="ALLD3" value="ALLD3 - Allied"></option>
+              <option
+                id="BMEB4"
+                value="BMEB4 - Banco Mercantil do Brasil"
+              ></option>
+              <option
+                id="RPMG3"
+                value="RPMG3 - Refinaria de Manguinhos"
+              ></option>
+              <option id="AALR3" value="AALR3 - Alliança"></option>
+              <option id="GGBR3" value="GGBR3 - Gerdau"></option>
+              <option id="JFEN3" value="JFEN3 - João Fortes"></option>
+              <option id="OFSA3" value="OFSA3 - Ourofino Saúde Animal"></option>
+              <option id="BRKM3" value="BRKM3 - Braskem"></option>
+              <option id="RAPT3" value="RAPT3 - Randon"></option>
+              <option id="WHRL4" value="WHRL4 - Whirlpool"></option>
+              <option id="ALUP4" value="ALUP4 - Alupar"></option>
+              <option
+                id="FHER3"
+                value="FHER3 - Fertilizantes Heringer"
+              ></option>
+              <option id="ENGI4" value="ENGI4 - Energisa"></option>
+              <option id="BRSR3" value="BRSR3 - Banrisul"></option>
+              <option id="VSTE3" value="VSTE3 - LE LIS BLANC"></option>
+              <option id="DOTZ3" value="DOTZ3 - Dotz"></option>
+              <option id="ISAE3" value="ISAE3 - ISA Energia"></option>
+              <option id="ALUP3" value="ALUP3 - Alupar"></option>
+              <option
+                id="EQPA3"
+                value="EQPA3 - Equatorial Energia Pará"
+              ></option>
+              <option id="PINE3" value="PINE3 - Banco Pine"></option>
+              <option id="OSXB3" value="OSXB3 - OSX Brasil"></option>
+              <option id="CEBR6" value="CEBR6 - CEB"></option>
+              <option id="RPAD5" value="RPAD5 - Alfa Holdings"></option>
+              <option id="AMAR11" value="AMAR11 - Lojas Marisa"></option>
+              <option id="COCE5" value="COCE5 - Coelce"></option>
+              <option id="AZEV11" value="AZEV11 - Azevedo & Travassos"></option>
+              <option id="BPAC3" value="BPAC3 - Banco BTG Pactual"></option>
+              <option id="CEBR3" value="CEBR3 - CEB"></option>
+              <option id="TASA3" value="TASA3 - Taurus"></option>
+              <option id="UNIP3" value="UNIP3 - Unipar"></option>
+              <option id="ENGI3" value="ENGI3 - Energisa"></option>
+              <option id="WHRL3" value="WHRL3 - Whirlpool"></option>
+              <option id="CGRA4" value="CGRA4 - Grazziotin"></option>
+              <option id="BGIP4" value="BGIP4 - Banese"></option>
+              <option id="MGEL4" value="MGEL4 - Mangels"></option>
+              <option id="RNEW11" value="RNEW11 - Renova Energia"></option>
+              <option id="BEES4" value="BEES4 - Banestes"></option>
+              <option id="HAGA4" value="HAGA4 - Haga"></option>
+              <option id="EMAE4" value="EMAE4 - EMAE"></option>
+              <option id="NEXP3" value="NEXP3 - Brasil Brokers"></option>
+              <option id="WEST3" value="WEST3 - Westwing"></option>
+              <option id="BPAC5" value="BPAC5 - Banco BTG Pactual"></option>
+              <option id="EPAR3" value="EPAR3 - Embpar Participações"></option>
+              <option id="RPAD3" value="RPAD3 - Alfa Holdings"></option>
+              <option id="SNSY5" value="SNSY5 - Sansuy"></option>
+              <option id="CEBR5" value="CEBR5 - CEB"></option>
+              <option id="NUTR3" value="NUTR3 - Nutriplant"></option>
+              <option id="CLSC4" value="CLSC4 - Celesc"></option>
+              <option id="MNDL3" value="MNDL3 - Mundial"></option>
+              <option
+                id="BMEB3"
+                value="BMEB3 - Banco Mercantil do Brasil"
+              ></option>
+              <option id="RPAD6" value="RPAD6 - Alfa Holdings"></option>
+              <option id="CGAS5" value="CGAS5 - Comgás"></option>
+              <option id="TELB4" value="TELB4 - Telebras"></option>
+              <option id="AVLL3" value="AVLL3 - Alphaville"></option>
+              <option id="ATMP3" value="ATMP3 - Atma"></option>
+              <option id="MTSA4" value="MTSA4 - Metisa"></option>
+              <option id="EQMA3B" value="EQMA3B - Equatorial Maranhão"></option>
+              <option id="DEXP4" value="DEXP4 - Dexxos"></option>
+              <option id="CTSA4" value="CTSA4 - Santanense"></option>
+              <option id="CEEB3" value="CEEB3 - COELBA"></option>
+              <option id="DOHL4" value="DOHL4 - Döhler"></option>
+              <option id="FRIO3" value="FRIO3 - Metalfrio"></option>
+              <option id="CGRA3" value="CGRA3 - Grazziotin"></option>
+              <option id="CRPG6" value="CRPG6 - Tronox Pigmentos"></option>
+              <option id="WLMM4" value="WLMM4 - WLM"></option>
+              <option id="MNPR3" value="MNPR3 - Minupar"></option>
+              <option id="TELB3" value="TELB3 - Telebras"></option>
+              <option id="DOHL3" value="DOHL3 - Döhler"></option>
+              <option id="BAZA3" value="BAZA3 - Banco da Amazônia"></option>
+              <option id="TKNO4" value="TKNO4 - Tekno"></option>
+              <option id="EUCA3" value="EUCA3 - Eucatex"></option>
+              <option id="BALM4" value="BALM4 - Baumer"></option>
+              <option id="REDE3" value="REDE3 - Rede Energia"></option>
+              <option id="BNBR3" value="BNBR3 - Banco do Nordeste"></option>
+              <option id="PSVM11" value="PSVM11 - PORTO VM"></option>
+              <option id="UNIP5" value="UNIP5 - Unipar"></option>
+              <option id="SOND5" value="SOND5 - Sondotécnica"></option>
+              <option id="MRSA6B" value="MRSA6B - MRS Logística"></option>
+              <option id="CEDO4" value="CEDO4 - Cedro Têxtil"></option>
+              <option id="CRPG5" value="CRPG5 - Tronox Pigmentos"></option>
+              <option
+                id="BMIN4"
+                value="BMIN4 - Banco Mercantil de Investimentos"
+              ></option>
+              <option id="EALT3" value="EALT3 - Electro Aço Altona"></option>
+              <option id="PLAS3" value="PLAS3 - Plascar"></option>
+              <option
+                id="RSUL4"
+                value="RSUL4 - Metalúrgica Riosulense"
+              ></option>
+              <option id="AHEB3" value="AHEB3 - São Paulo Turismo"></option>
+              <option id="PATI4" value="PATI4 - Panatlântica"></option>
+              <option
+                id="GEPA4"
+                value="GEPA4 - Rio Paranapanema Energia"
+              ></option>
+              <option
+                id="GEPA3"
+                value="GEPA3 - Rio Paranapanema Energia"
+              ></option>
+              <option id="CTKA4" value="CTKA4 - Karsten"></option>
+              <option id="BRSR5" value="BRSR5 - Banrisul"></option>
+              <option id="FESA3" value="FESA3 - Ferbasa"></option>
+              <option id="CPLE5" value="CPLE5 - Copel"></option>
+              <option id="MWET4" value="MWET4 - Wetzel"></option>
+              <option id="BSLI3" value="BSLI3 - Banco de Brasília"></option>
+              <option id="AFLT3" value="AFLT3 - Afluente T"></option>
+              <option id="ALPA3" value="ALPA3 - Alpargatas"></option>
+              <option id="MAPT3" value="MAPT3 - Cemepe"></option>
+              <option id="HOOT4" value="HOOT4 - Hotéis Othon"></option>
+              <option id="BIOM11" value="BIOM11 - Biomm"></option>
+              <option id="BMKS3" value="BMKS3 - Monark"></option>
+              <option id="PPLA11" value="PPLA11 - PPLA"></option>
+              <option id="HAGA3" value="HAGA3 - Haga"></option>
+              <option id="PTNT3" value="PTNT3 - Pettenati"></option>
+              <option id="CTSA3" value="CTSA3 - Santanense"></option>
+              <option id="ESTR4" value="ESTR4 - Estrela"></option>
+              <option id="BSLI4" value="BSLI4 - Banco de Brasília"></option>
+              <option id="BDLL3" value="BDLL3 - Bardella"></option>
+              <option id="ENMT3" value="ENMT3 - Energisa MT"></option>
+              <option id="EKTR4" value="EKTR4 - Elektro"></option>
+              <option id="GPAR3" value="GPAR3 - CELGPAR"></option>
+              <option id="CGAS3" value="CGAS3 - Comgás"></option>
+              <option id="BGIP3" value="BGIP3 - Banese"></option>
+              <option
+                id="BMIN3"
+                value="BMIN3 - Banco Mercantil de Investimentos"
+              ></option>
+              <option id="HETA4" value="HETA4 - Hercules"></option>
+              <option id="MAPT4" value="MAPT4 - Cemepe"></option>
+              <option id="FIEI3" value="FIEI3 - Fica"></option>
+              <option id="HBTS5" value="HBTS5 - Habitasul"></option>
+              <option id="PATI3" value="PATI3 - Panatlântica"></option>
+              <option
+                id="EQPA5"
+                value="EQPA5 - Equatorial Energia Pará"
+              ></option>
+              <option
+                id="GSHP3"
+                value="GSHP3 - General Shopping & Outlets"
+              ></option>
+              <option id="WLMM3" value="WLMM3 - WLM"></option>
+              <option id="LIPR3" value="LIPR3 - Eletropar"></option>
+              <option id="ELET5" value="ELET5 - Eletrobras"></option>
+              <option id="CLSC3" value="CLSC3 - Celesc"></option>
+              <option id="AHEB6" value="AHEB6 - São Paulo Turismo"></option>
+              <option id="MRSA3B" value="MRSA3B - MRS Logística"></option>
+              <option id="BRKM6" value="BRKM6 - Braskem"></option>
+              <option id="NORD3" value="NORD3 - Nordon"></option>
+              <option id="TEKA4" value="TEKA4 - Teka"></option>
+              <option id="EMAE3" value="EMAE3 - EMAE"></option>
+              <option id="BALM3" value="BALM3 - Baumer"></option>
+              <option id="DASA11" value="DASA11 - DASA11"></option>
+              <option id="MWET3" value="MWET3 - Wetzel"></option>
+              <option id="ENMT4" value="ENMT4 - Energisa MT"></option>
+              <option id="BAUH4" value="BAUH4 - Excelsior"></option>
+              <option
+                id="PEAB3"
+                value="PEAB3 - Participações Aliança da Bahia"
+              ></option>
+              <option id="CEDO3" value="CEDO3 - Cedro Têxtil"></option>
+              <option id="BDLL4" value="BDLL4 - Bardella"></option>
+              <option id="IGTI4" value="IGTI4 - Iguatemi"></option>
+              <option
+                id="IGTI4"
+                value="IGTI4 - Jereissati Participações"
+              ></option>
+              <option id="PINE11" value="PINE11 - Banco Pine"></option>
+              <option id="USIM6" value="USIM6 - Usiminas"></option>
+              <option id="CEED3" value="CEED3 - CEEE D"></option>
+            </datalist>
+
+            <label for="add-asset_quantity">Quantidade:</label><br />
+            <input type="number" id="add-asset_quantity" /><br />
+            <label for="add-asset_score">Meta: </label>
+            <p style="display: inline" id="rangeValue2">5</p>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value="5"
+              class="slider"
+              id="add-asset_score"
+              oninput="rangeValue2.innerText = this.value"
+            />
+            <div class="btn-div">
+              <button id="add-asset_btn" class="btn">Adicionar</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>
