@@ -1,6 +1,6 @@
-import { assets } from "../database/stocks_db.js";
+import { assets, updateDB } from "./create_asset.js";
 import { renderTable } from "./render_format_table.js";
-import { sumBalance } from "./calculations.js";
+import { sumBalance } from "./calc.js";
 import { findAsset } from "./create_asset.js";
 
 export { openCloseDeletePopup, openEditPopup, editAsset, deleteAsset };
@@ -29,12 +29,13 @@ function openEditPopup(ev) {
   editPopup.style.display = "block";
 }
 
-function editAsset(ev) {
+async function editAsset(ev) {
   //save edited values do designed asset and update table
   const ticker = editPopup.dataset.ticker;
   const asset = findAsset(ticker);
   asset.quantity = qntInput.value;
   asset.score = scoreInput.value;
+  await updateDB();
   editPopup.style.display = "none";
   renderTable();
 }
@@ -56,12 +57,14 @@ function openCloseDeletePopup(ev) {
   deletePopup.dataset.ticker = ticker;
 }
 
-function deleteAsset(ev) {
+async function deleteAsset(ev) {
   //delete asset from database and delete correspondent table row
   const ticker = deletePopup.dataset.ticker;
-  assets.filter((asset, index) => {
+  assets.filter(async (asset, index) => {
     if (asset.ticker === ticker) {
       assets.splice(index, 1);
+      console.log(assets);
+      await updateDB();
       document.getElementById(`${ticker}-ticker`).parentElement.remove();
     }
   });

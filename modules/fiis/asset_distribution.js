@@ -1,5 +1,4 @@
-export { openBuyPopup };
-import { findAsset } from "./create_asset.js";
+import { findAsset, updateDB } from "./create_asset.js";
 import { renderTable } from "./render_format_table.js";
 
 //Add asset quantity to table after distribution
@@ -28,11 +27,12 @@ const total = document.getElementById("sum-td"),
   buyBtnN = document.getElementById("buy-popup-btn_n"),
   buyText = document.getElementById("buy-text");
 
-function makePurchase() {
+async function makePurchase() {
   //Add quantity of each asset to the database
   Object.values(elements).forEach((el) => {
     findAsset(el.ticker.innerText).quantity += Number(el.quantity.innerText);
   });
+  await updateDB();
   renderTable();
   //Clear distribution table
   elements.forEach((group) => {
@@ -45,7 +45,7 @@ function makePurchase() {
   buyPopup.style.display = "none";
 }
 
-function openBuyPopup() {
+export function openBuyPopup() {
   if (elements[0].ticker.innerText === "") {
     alert("Por favor calcule o rateio antes de realizar a compra.");
   } else {

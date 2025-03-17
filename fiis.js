@@ -1,19 +1,24 @@
 //****modules*****
 
-import { renderTable } from "./modules/render_format_table.js";
-import { addNewAsset, preventSelection } from "./modules/create_asset.js";
+import { renderTable } from "./modules/fiis/render_format_table.js";
+import { addNewAsset, preventSelection } from "./modules/fiis/create_asset.js";
 import {
   editAsset,
   openCloseDeletePopup,
   deleteAsset,
-} from "./modules/edit_delete.js";
+} from "./modules/fiis/edit_delete.js";
 
-import { calcDistribution } from "./modules/calculations.js";
-import { openBuyPopup } from "./modules/asset_distribution.js";
+import { calcDistribution } from "./modules/fiis/calc.js";
+import { openBuyPopup } from "./modules/fiis/asset_distribution.js";
 
-//General stuff*****
+//************create array to store asset info locally*************/
+
+const assets = [];
+
+//**********General stuff*****
 
 //Render table form database when page load
+//addEventListener("DOMContentLoaded", renderTable);
 addEventListener("DOMContentLoaded", renderTable);
 
 //Prevent user from selecting non-listed asset

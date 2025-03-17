@@ -1,5 +1,5 @@
 export { sumBalance, calcPortfolio, calcDistribution };
-import { assets } from "../database/stocks_db.js";
+import { assets } from "./create_asset.js";
 import { formatNumber } from "./render_format_table.js";
 
 // calculations

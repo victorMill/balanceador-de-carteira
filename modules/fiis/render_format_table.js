@@ -1,12 +1,15 @@
-import { sumBalance, calcPortfolio } from "./calculations.js";
-import { assets } from "../database/stocks_db.js";
+import { sumBalance, calcPortfolio } from "./calc.js";
 import { openCloseDeletePopup, openEditPopup } from "./edit_delete.js";
+import { readDB, requestAssetPriceAll, updateDB } from "./create_asset.js";
+import { assets } from "./create_asset.js";
 
 export { renderTable, formatTable, formatNumber };
 
 //create and render table and table buttons
 
-function renderTable() {
+async function renderTable() {
+  await readDB();
+  await requestAssetPriceAll();
   const tBody = document.getElementById("assets-table_body");
   const tdNode = [...document.querySelectorAll("#assets-table_body > tr > td")];
 
